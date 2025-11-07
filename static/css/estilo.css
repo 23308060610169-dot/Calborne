@@ -1,0 +1,104 @@
+/* Fuente moderna y limpia */
+body {
+  font-family: 'Poppins', sans-serif;
+  background-color: #f9fafb;
+  color: #333;
+}
+
+/* Tarjetas generales */
+.card {
+  border: none;
+  border-radius: 16px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 14px rgba(0,0,0,0.1);
+}
+
+/* Inputs y formularios */
+.form-control, .form-select {
+  border-radius: 10px;
+  border: 1px solid #ced4da;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.form-control:focus, .form-select:focus {
+  border-color: #4caf50;
+  box-shadow: 0 0 0 0.2rem rgba(76,175,80,0.25);
+}
+
+/* Botones */
+.btn {
+  border-radius: 10px;
+  padding: 0.6rem 1.2rem;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.btn-success {
+  background-color: #4caf50;
+  border: none;
+}
+
+.btn-success:hover {
+  background-color: #43a047;
+}
+
+.btn-outline-success:hover {
+  background-color: #4caf50;
+  color: white;
+}
+
+/* Navbar */
+.navbar-brand i {
+  margin-right: 5px;
+  color: #4caf50;
+}
+
+.navbar {
+  font-size: 0.95rem;
+}
+
+.dropdown-menu {
+  border-radius: 10px;
+}
+
+/* Footer */
+footer {
+  font-size: 0.9rem;
+  background-color: #fff;
+}
+
+/* Formularios centrados */
+.container form {
+  background-color: white;
+  border-radius: 16px;
+  padding: 2rem;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+}
+
+/* Textos */
+h1, h2, h3, h4 {
+  color: #2e7d32;
+  font-weight: 600;
+}
+
+.text-success {
+  color: #388e3c !important;
+}
+
+/* Alertas */
+.alert {
+  border-radius: 10px;
+  border: none;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  form.w-50 {
+    width: 100% !important;
+  }
+}

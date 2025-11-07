@@ -14,55 +14,37 @@
   <h3 class="text-danger mb-3">Herramientas</h3>
   <div class="row g-3">
     <div class="col-md-6 col-lg-4">
-      <div class="card p-3 gothic-card">
+      <div class="card p-3 ">
         <h5>Índice de Masa Corporal (IMC)</h5>
-        <p class="mb-0">IMC: <strong>{{ tools.imc if tools and tools.imc else '—' }}</strong></p>
-        <small class="text-secondary">Peso: {{ tools.profile.peso if tools and tools.profile.peso else '—' }} kg · Altura: {{ tools.profile.altura if tools and tools.profile.altura else '—' }} cm</small>
       </div>
     </div>
 
     <div class="col-md-6 col-lg-4">
-      <div class="card p-3 gothic-card">
+      <div class="card p-3 ">
         <h5>Tasa Metabólica Basal (TMB)</h5>
-        <p class="mb-0">TMB (Mifflin-St Jeor): <strong>{{ tools.tmb if tools and tools.tmb else '—' }}</strong> kcal/día</p>
-        <small class="text-secondary">Edad: {{ tools.profile.edad if tools and tools.profile.edad else '—' }} · Sexo: {{ tools.profile.sexo if tools and tools.profile.sexo else '—' }}</small>
       </div>
     </div>
 
     <div class="col-md-6 col-lg-4">
-      <div class="card p-3 gothic-card">
+      <div class="card p-3">
         <h5>Gasto Calórico Total (GCT / TDEE)</h5>
-        <p class="mb-0">GCT: <strong>{{ tools.tdee if tools and tools.tdee else '—' }}</strong> kcal/día</p>
-        <small class="text-secondary">Actividad: {{ tools.profile.actividad if tools and tools.profile.actividad else '—' }}</small>
       </div>
     </div>
 
     <div class="col-md-6 col-lg-4">
-      <div class="card p-3 gothic-card">
+      <div class="card p-3">
         <h5>Peso Corporal Ideal</h5>
-        <p class="mb-0">Ideal (Devine): <strong>{{ tools.peso_ideal if tools and tools.peso_ideal else '—' }}</strong> kg</p>
       </div>
     </div>
 
     <div class="col-md-6 col-lg-4">
-      <div class="card p-3 gothic-card">
-        <h5>Macronutrientes (estimado)</h5>
-        {% if tools and tools.macros %}
-          <p class="mb-0">Kcal objetivo: <strong>{{ tools.macros.kcal }}</strong></p>
-          <p class="mb-0">Carbohidratos: <strong>{{ tools.macros.carbs_g }} g</strong></p>
-          <p class="mb-0">Proteínas: <strong>{{ tools.macros.protein_g }} g</strong> {% if tools.macros.protein_per_kg %}({{ tools.macros.protein_per_kg }} g/kg){% endif %}</p>
-          <p class="mb-0">Grasas: <strong>{{ tools.macros.fat_g }} g</strong></p>
-        {% else %}
-          <p class="mb-0">Datos insuficientes para calcular macronutrientes.</p>
-        {% endif %}
+      <div class="card p-3">
       </div>
     </div>
 
     <div class="col-12 col-lg-4">
       <div class="card p-3 gothic-card">
         <h5>Analizador de recetas</h5>
-        <p class="mb-2 text-secondary">Funcionalidad en desarrollo. Puedes subir/pegar una receta para analizar kcal y macros más adelante.</p>
-        <button class="btn btn-outline-danger" disabled>Analizar receta (próximamente)</button>
       </div>
     </div>
   </div>
