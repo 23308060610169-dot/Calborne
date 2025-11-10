@@ -16,7 +16,7 @@
             </div>
             <div class="mb-3">
               <label class="form-label">Contraseña</label>
-              <input class="form-control gothic-input" name="password" type="password" required>
+              <input class="form-control gothic-input" name="password" type="password" value="{{ registro.get('password','') }}" required>
             </div>
 
           {% elif step == 2 %}
