@@ -34,7 +34,6 @@
               <li><a class="dropdown-item" href="{{ url_for('perfil') }}">Perfil</a></li>
               <li><hr class="dropdown-divider"></li>
               <li><a class="dropdown-item text-danger" href="{{ url_for('cerrar') }}">Cerrar sesión</a></li>
-              
             </ul>
           </div>
         {% else %}
@@ -46,6 +45,21 @@
       </div>
     </div>
   </nav>
+
+  <div class="container mt-3">
+    {% if session.get('logueado') %}
+      <div class="card p-3 mb-3">
+        <div class="d-flex flex-wrap gap-2">
+          <a href="{{ url_for('calculadora_IMC') }}" class="btn btn-outline-success">Calculadora IMC</a>
+          <a href="{{ url_for('calculadora_TMB') }}" class="btn btn-outline-success">Calculadora TMB</a>
+          <a href="{{ url_for('calculadora_GCT') }}" class="btn btn-outline-success">Calculadora GCT</a>
+          <a href="{{ url_for('calculadora_PMI') }}" class="btn btn-outline-success">Calculadora PMI</a>
+          <a href="{{ url_for('registro_alimentos') }}" class="btn btn-outline-success">Registro de alimentos</a>
+        </div>
+      </div>
+    {% endif %}
+  </div>
+  
 
   <main class="container py-5">
     {% with messages = get_flashed_messages(with_categories=true) %}

@@ -121,13 +121,89 @@ def registro():
 
     return render_template('registro.html', step=step, total_steps=total_steps, registro=registro)
 
-
 @app.route('/cerrar')
 def cerrar():
     session.clear()
     flash("El cazador ha regresado a su sueño...", "danger")
     return redirect(url_for('home'))
 
+@app.route('/calculadora_IMC', methods=['GET', 'POST'])
+def calculadora_IMC():
+    imc = None
+    peso = None
+    altura = None
+    if request.method == 'POST':
+        try:
+            peso = float(request.form.get('peso') or 0)
+            altura = float(request.form.get('altura') or 0)
+            if peso > 0 and altura > 0:
+                imc = peso / ((altura / 100) ** 2)
+        except ValueError:
+            imc = None
+    return render_template('calculadora_IMC.html', imc=imc, peso=peso, altura=altura)
+
+@app.route('/calculadora_TMB', methods=['GET', 'POST'])
+def calculadora_TMB():
+    tmb = None
+    peso = None
+    altura = None
+    edad = None
+    sexo = ''
+    if request.method == 'POST':
+        try:
+            peso = float(request.form.get('peso') or 0)
+            altura = float(request.form.get('altura') or 0)
+            edad = int(request.form.get('edad') or 0)
+            sexo = request.form.get('sexo', '')
+            if peso > 0 and altura > 0 and edad > 0:
+                if sexo == 'Male':
+                    tmb = 88.362 + (13.397 * peso) + (4.799 * altura) - (5.677 * edad)
+                elif sexo == 'Female':
+                    tmb = 447.593 + (9.247 * peso) + (3.098 * altura) - (4.330 * edad)
+        except ValueError:
+            tmb = None
+    return render_template('calculadora_TMB.html', tmb=tmb, peso=peso, altura=altura, edad=edad, sexo=sexo)
+
+@app.route('/calculadora_GCT', methods=['GET', 'POST'])
+def calculadora_GCT():
+    gct = None
+    tmb = None
+    actividad = ''
+    if request.method == 'POST':
+        try:
+            tmb = float(request.form.get('tmb') or 0)
+            actividad = request.form.get('actividad', '')
+            if tmb and actividad:
+                if actividad == 'Baja':
+                    gct = tmb * 1.2
+                elif actividad == 'Media':
+                    gct = tmb * 1.55
+                elif actividad == 'Alta':
+                    gct = tmb * 1.9
+        except ValueError:
+            gct = None
+    return render_template('calculadora_GCT.html', gct=gct, tmb=tmb, actividad=actividad)
+
+@app.route('/calculadora_PMI', methods=['GET', 'POST'])
+def calculadora_PMI():
+    pmi = None
+    sexo = ''
+    altura = None
+    altura_in = None
+    if request.method == 'POST':
+        try:
+            altura = float(request.form.get('altura') or 0)  # cm
+            sexo = request.form.get('sexo', '')
+            if altura and sexo:
+                altura_in = altura / 2.54
+                # Fórmula de Devine: base 50/45.5 + 2.3 * (inches - 60)
+                if sexo == 'Male':
+                    pmi = 50.0 + 2.3 * (altura_in - 60.0)
+                elif sexo == 'Female':
+                    pmi = 45.5 + 2.3 * (altura_in - 60.0)
+        except ValueError:
+            pmi = None
+    return render_template('calculadora_PMI.html', pmi=pmi, sexo=sexo, altura=altura)
 
 if __name__ == '__main__':
     app.run(debug=True)

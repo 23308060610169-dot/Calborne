@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% block title %}Calculadora TMB{% endblock %}
+{% block content %}
+<div class="card p-4">
+  <h4>Calculadora TMB</h4>
+  <form method="post">
+    <div class="mb-3">
+      <label>Peso (kg)</label>
+      <input name="peso" class="form-control" value="{{ peso or '' }}">
+    </div>
+    <div class="mb-3">
+      <label>Altura (cm)</label>
+      <input name="altura" class="form-control" value="{{ altura or '' }}">
+    </div>
+    <div class="mb-3">
+      <label>Edad</label>
+      <input name="edad" class="form-control" value="{{ edad or '' }}">
+    </div>
+    <div class="mb-3">
+      <label>Sexo</label>
+      <select name="sexo" class="form-select">
+        <option value="">Selecciona</option>
+        <option value="Male" {% if sexo=='Male' %}selected{% endif %}>Male</option>
+        <option value="Female" {% if sexo=='Female' %}selected{% endif %}>Female</option>
+      </select>
+    </div>
+    <button class="btn btn-success" type="submit">Calcular</button>
+  </form>
+
+  {% if tmb is not none %}
+    <hr>
+    <h5>TMB: {{ '%.2f'|format(tmb) }}</h5>
+  {% endif %}
+</div>
+{% endblock %}
