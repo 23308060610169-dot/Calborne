@@ -1,0 +1,91 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container py-5">
+
+    <h2 class="text-center mb-4"> Buscador de Recetas Saludables</h2>
+    <div class="card p-4 mb-4">
+        <form method="POST" action="/recetas">
+            <div class="row g-3">
+
+                <div class="col-md-6">
+                    <label class="form-label fw-bold">Buscar por nombre o ingrediente</label>
+                    <input type="text" name="query" class="form-control" placeholder="Ej. pollo, arroz, pasta..." required>
+                </div>
+
+                <div class="col-md-3">
+                    <label class="form-label fw-bold">Tiempo máximo (min)</label>
+                    <input type="number" name="tiempo" class="form-control" placeholder="Opcional">
+                </div>
+
+                <div class="col-md-3">
+                    <label class="form-label fw-bold">Dieta</label>
+                    <select name="dieta" class="form-select">
+                        <option value="">Cualquiera</option>
+                        <option value="vegan">Vegana</option>
+                        <option value="vegetarian">Vegetariana</option>
+                        <option value="gluten-free">Sin gluten</option>
+                        <option value="keto">Keto</option>
+                        <option value="mediterranean">Mediterránea</option>
+                    </select>
+                </div>
+
+                <div class="col-12 text-center">
+                    <button class="btn btn-success mt-3 px-5" type="submit">
+                        Buscar Recetas
+                    </button>
+                </div>
+
+            </div>
+        </form>
+    </div>
+
+
+    {% if recetas %}
+    <h3 class="mb-3">Resultados:</h3>
+
+    <div class="row row-cols-1 row-cols-md-3 g-4">
+
+        {% for r in recetas %}
+        <div class="col">
+            <div class="card h-100">
+
+                {% if r.imagen %}
+                <img src="{{ r.imagen }}" class="card-img-top" alt="{{ r.nombre }}">
+                {% else %}
+                <img src="https://via.placeholder.com/400x250?text=Sin+Imagen" class="card-img-top">
+                {% endif %}
+
+                <div class="card-body">
+                    <h5 class="card-title">{{ r.nombre }}</h5>
+                    <p class="card-text text-muted">
+                        {{ r.descripcion }}
+                    </p>
+
+                    <span class="badge bg-success mb-2">
+                        {{ r.tiempo }} min
+                    </span>
+
+                    <div>
+                        {% for t in r.tipos %}
+                        <span class="badge bg-secondary">{{ t }}</span>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <div class="card-footer text-end bg-white border-0">
+                    <a href="/receta/{{ r.id }}" class="btn btn-outline-success">
+                        Ver receta
+                    </a>
+                </div>
+
+            </div>
+        </div>
+        {% endfor %}
+
+    </div>
+
+    {% endif %}
+
+</div>
+{% endblock %}

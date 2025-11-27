@@ -1,0 +1,116 @@
+{% extends "base.html" %}
+
+{% block title %}Mi Perfil{% endblock %}
+
+{% block content %}
+
+<div class="container">
+
+    <div class="text-center mb-4">
+        <h1 class="fw-bold text-success">Mi Perfil</h1>
+        <p class="text-secondary">Información personal y objetivos nutricionales</p>
+    </div>
+
+    <div class="row g-4">
+        <div class="col-md-6">
+            <div class="card shadow-sm">
+                <div class="card-header bg-success text-white fw-bold">
+                    Datos personales
+                </div>
+                <div class="card-body">
+
+                    <p><strong>Nombre:</strong> {{ usuario.nombre }} {{ usuario.apellidos }}</p>
+                    <p><strong>Edad:</strong> {{ usuario.edad }} años</p>
+                    <p><strong>Sexo:</strong> {{ usuario.sexo }}</p>
+                    <p><strong>Peso:</strong> {{ usuario.peso }} kg</p>
+                    <p><strong>Altura:</strong> {{ usuario.altura }} cm</p>
+                    <p><strong>Nivel de actividad:</strong> {{ usuario.actividad }}</p>
+                    <p><strong>Objetivo:</strong> {{ usuario.objetivo }}</p>
+
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="card shadow-sm">
+                <div class="card-header bg-success text-white fw-bold">
+                    Preferencias y restricciones
+                </div>
+                <div class="card-body">
+
+                    <p><strong>Alergias:</strong> {{ usuario.alergias or "Ninguna" }}</p>
+                    <p><strong>Intolerancias:</strong> {{ usuario.intolerancias or "Ninguna" }}</p>
+                    <p><strong>Tipo de dieta:</strong> {{ usuario.dieta or "Sin especificar" }}</p>
+                    <p><strong>No le gustan:</strong> {{ usuario.no_gusta or "Sin especificar" }}</p>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <h3 class="fw-bold text-success mt-5">Indicadores del cuerpo</h3>
+    <div class="row g-4 mt-1">
+
+        <div class="col-md-3">
+            <div class="card text-center shadow-sm p-3">
+                <h5 class="fw-bold">IMC</h5>
+                <p class="display-6">{{ usuario.imc or "-" }}</p>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card text-center shadow-sm p-3">
+                <h5 class="fw-bold">TMB</h5>
+                <p class="display-6">{{ usuario.tmb or "-" }}</p>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card text-center shadow-sm p-3">
+                <h5 class="fw-bold">GCT</h5>
+                <p class="display-6">{{ usuario.gct or "-" }}</p>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card text-center shadow-sm p-3">
+                <h5 class="fw-bold">Peso Ideal</h5>
+                <p class="display-6">{{ usuario.peso_ideal or "-" }}</p>
+            </div>
+        </div>
+    </div>
+
+    <h3 class="fw-bold text-success mt-5">Macronutrientes recomendados</h3>
+    <div class="row g-4 mt-1">
+
+        <div class="col-md-4">
+            <div class="card text-center shadow-sm p-3">
+                <h5 class="fw-bold">Proteínas</h5>
+                <p class="fs-4">{{ usuario.macros_prote or "-" }} g/día</p>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card text-center shadow-sm p-3">
+                <h5 class="fw-bold">Carbohidratos</h5>
+                <p class="fs-4">{{ usuario.macros_carbs or "-" }} g/día</p>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card text-center shadow-sm p-3">
+                <h5 class="fw-bold">Grasas</h5>
+                <p class="fs-4">{{ usuario.macros_grasas or "-" }} g/día</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="text-center mt-5">
+        <a class="btn btn-success btn-lg px-5">
+            Editar Perfil
+        </a>
+    </div>
+
+</div>
+
+{% endblock %}

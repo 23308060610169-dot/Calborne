@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container py-4">
+  <div class="row g-4">
+    <div class="col-md-7">
+      <div class="card p-3">
+        <img src="{{ receta.imagen }}" class="img-fluid mb-3" alt="{{ receta.nombre }}">
+        <h2 class="text-success">{{ receta.nombre }}</h2>
+        <p><strong>Porciones:</strong> {{ receta.servings }}</p>
+        <p><strong>Tiempo:</strong> {{ receta.readyInMinutes }} min</p>
+
+        <h5 class="mt-3">Instrucciones</h5>
+        <div>{{ receta.instructions | safe }}</div>
+      </div>
+    </div>
+
+    <div class="col-md-5">
+      <div class="card p-3 mb-3">
+        <h4 class="text-success">Resumen nutricional (total)</h4>
+        <p><strong>Calorías:</strong> {{ receta.nutrientes.cal }} kcal</p>
+        <p><strong>Proteína:</strong> {{ receta.nutrientes.prot }} g</p>
+        <p><strong>Carbohidratos:</strong> {{ receta.nutrientes.carbs }} g</p>
+        <p><strong>Grasas:</strong> {{ receta.nutrientes.fat }} g</p>
+      </div>
+
+      <div class="card p-3 mb-3">
+        <h5 class="text-success">Por porción</h5>
+        <p><strong>Cal / porc.:</strong> {{ (receta.nutrientes.cal / receta.servings) | round(2) }} kcal</p>
+        <p><strong>Prot / porc.:</strong> {{ (receta.nutrientes.prot / receta.servings) | round(2) }} g</p>
+      </div>
+
+      <div class="card p-3">
+        <h5 class="text-success">Ingredientes (detalle)</h5>
+        <ul class="list-unstyled">
+          {% for i in receta.ingredientes_nut %}
+          <li class="mb-2">
+            <strong>{{ i.original }}</strong><br>
+            <small class="text-muted">{{ i.chosen_description or 'No encontrado' }}</small><br>
+            <small>{{ i.cal }} kcal — {{ i.prot }} g P — {{ i.carbs }} g C — {{ i.fat }} g F</small>
+          </li>
+          {% endfor %}
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

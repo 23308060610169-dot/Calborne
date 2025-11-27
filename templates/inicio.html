@@ -3,57 +3,73 @@
 {% block title %}Inicio{% endblock %}
 
 {% block content %}
-<div class="text-center mb-5">
-  <h1 class="display-4 fw-bold ">INICIO</h1>
-  <p class="lead text-secondary">Panel principal</p>
+
+<div class="text-center mb-4">
+    <h1 class="fw-bold text-success">Panel Principal</h1>
+    <p class="text-secondary">Bienvenido al sistema nutricional CALBORNE</p>
 </div>
 
-<hr class="border-danger mb-5">
+<hr class="border-success mb-5">
+<div class="row g-4">
 
-{% if session.get('logueado') %}
-  <h3 class="text-danger mb-3">Herramientas</h3>
-  <div class="row g-3">
-    <div class="col-md-6 col-lg-4">
-      <div class="card p-3 ">
-        <h5>Índice de Masa Corporal (IMC)</h5>
-      </div>
+    {% if session.get('logueado') %}
+
+    <div class="col-md-4">
+        <a href="{{ url_for('perfil') }}" class="text-decoration-none">
+            <div class="card h-100 p-4 text-center">
+                <i class="bi bi-person-circle display-4 text-success mb-3"></i>
+                <h4 class="fw-bold">Mi Perfil</h4>
+                <p class="text-secondary">Ver y actualizar información personal</p>
+            </div>
+        </a>
     </div>
 
-    <div class="col-md-6 col-lg-4">
-      <div class="card p-3 ">
-        <h5>Tasa Metabólica Basal (TMB)</h5>
-      </div>
+    <div class="col-md-4">
+        <a href="{{ url_for('calculadora_IMC') }}" class="text-decoration-none">
+            <div class="card h-100 p-4 text-center">
+                <i class="bi bi-calculator-fill display-4 text-success mb-3"></i>
+                <h4 class="fw-bold">Calculadoras</h4>
+                <p class="text-secondary">IMC, TMB, GCT, Peso ideal y más</p>
+            </div>
+        </a>
     </div>
 
-    <div class="col-md-6 col-lg-4">
-      <div class="card p-3">
-        <h5>Gasto Calórico Total (GCT / TDEE)</h5>
-      </div>
+    <div class="col-md-4">
+        <a href="{{url_for('articulos')}}" class="text-decoration-none">
+            <div class="card h-100 p-4 text-center">
+                <i class="bi bi-journal-bookmark-fill display-4 text-success mb-3"></i>
+                <h4 class="fw-bold">Guias</h4>
+                <p class="text-secondary">Próximamente: recetas, consejos y guías</p>
+            </div>
+        </a>
+    </div>
+    
+
+    {% else %}
+
+    
+    <div class="col-md-6  ">
+        <a href="{{ url_for('calculadora_IMC') }}" class="text-decoration-none">
+            <div class="card h-100 p-4 text-center">
+                <i class="bi bi-calculator-fill display-4 text-success mb-3"></i>
+                <h4 class="fw-bold">Calculadoras</h4>
+                <p class="text-secondary">IMC, TMB, GCT, Peso ideal y más</p>
+            </div>
+        </a>
     </div>
 
-    <div class="col-md-6 col-lg-4">
-      <div class="card p-3">
-        <h5>Peso Corporal Ideal</h5>
-      </div>
+    <div class="col-md-6  ">
+        <a href="{{url_for('articulos')}}" class="text-decoration-none">
+            <div class="card h-100 p-4 text-center">
+                <i class="bi bi-journal-bookmark-fill display-4 text-success mb-3"></i>
+                <h4 class="fw-bold">Guias</h4>
+                <p class="text-secondary"> recetas, consejos y guías</p>
+            </div>
+        </a>
     </div>
 
-    <div class="col-md-6 col-lg-4">
-      <div class="card p-3">
-      </div>
-    </div>
+    {% endif %}
 
-    <div class="col-12 col-lg-4">
-      <div class="card p-3 gothic-card">
-        <h5>Analizador de recetas</h5>
-      </div>
-    </div>
-  </div>
-{% else %}
-  <div class="alert alert-info">Inicia sesión o crea una cuenta para ver las herramientas personalizadas.</div>
-{% endif %}
-
-<hr class="border-danger mt-5">
-
-<div class="text-center mt-5">
 </div>
+
 {% endblock %}

@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block title %}Calculadora GCT{% endblock %}
+{% block content %}
+<div class="card p-4">
+    <h4>Calculadora GCT</h4>
+    <form method="post">
+        <div class="mb-3">
+            <label>TMB</label>
+            <input name="tmb" class="form-control" value="{{ tmb or '' }}">
+        </div>
+        <div class="mb-3">
+            <label>Actividad</label>
+            <select name="actividad" class="form-select">
+                <option value="">Selecciona</option>
+                <option value="Baja" {% if actividad=='Baja' %}selected{% endif %}>Baja</option>
+                <option value="Media" {% if actividad=='Media' %}selected{% endif %}>Media</option>
+                <option value="Alta" {% if actividad=='Alta' %}selected{% endif %}>Alta</option>
+            </select>
+        </div>
+        <button class="btn btn-success" type="submit">Calcular</button>
+    </form>
+
+    {% if gct is not none %}
+    <hr>
+    <h5>GCT: {{ '%.2f'|format(gct) }}</h5>
+    {% endif %}
+</div>
+{% endblock %}

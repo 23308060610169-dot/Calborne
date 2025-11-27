@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="container mt-4">
+
+    <h1 class="text-success">Analizador Nutricional Avanzado</h1>
+    <p class="lead">Introduce tus ingredientes y calculo los macronutrientes totales y por porción.</p>
+
+    <form method="POST" class="card p-4">
+        <label class="form-label fw-semibold">Ingredientes (uno por línea)</label>
+        <textarea name="ingredientes" class="form-control mb-3" rows="5"
+        placeholder="Ejemplo:
+100g arroz
+1 huevo
+1 cucharada aceite de oliva"></textarea>
+
+        <label class="form-label fw-semibold">Número de porciones</label>
+        <select name="porciones" class="form-select mb-3">
+            <option value="1">1 porción</option>
+            <option value="2">2 porciones</option>
+            <option value="3">3 porciones</option>
+            <option value="4">4 porciones</option>
+            <option value="5">5 porciones</option>
+        </select>
+
+        <button class="btn btn-success">Calcular</button>
+    </form>
+
+    {% if resultados %}
+    <div class="mt-4">
+
+        <!-- TABLA DETALLADA -->
+        <div class="card p-3 mb-4">
+            <h4 class="mb-3">Detalle por ingrediente</h4>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Ingrediente</th>
+                        <th>Calorías</th>
+                        <th>Proteína</th>
+                        <th>Carbs</th>
+                        <th>Grasas</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for r in resultados %}
+                    <tr>
+                        <td>{{ r.nombre }}</td>
+                        <td>{{ r.cal }} kcal</td>
+                        <td>{{ r.prot }} g</td>
+                        <td>{{ r.carbs }} g</td>
+                        <td>{{ r.fat }} g</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <!-- RESUMEN TOTAL -->
+        <div class="card p-4 mb-4">
+            <h4 class="mb-3">Totales de la receta</h4>
+            <p><strong>Calorías:</strong> {{ totales.cal }} kcal</p>
+            <p><strong>Proteína:</strong> {{ totales.prot }} g</p>
+            <p><strong>Carbohidratos:</strong> {{ totales.carbs }} g</p>
+            <p><strong>Grasas:</strong> {{ totales.fat }} g</p>
+        </div>
+
+        <!-- POR PORCIÓN -->
+        <div class="card p-4">
+            <h4 class="mb-3">Por porción ({{ porciones }} porciones)</h4>
+            <p><strong>Calorías:</strong> {{ porcion.cal | round(2) }} kcal</p>
+            <p><strong>Proteína:</strong> {{ porcion.prot | round(2) }} g</p>
+            <p><strong>Carbohidratos:</strong> {{ porcion.carbs | round(2) }} g</p>
+            <p><strong>Grasas:</strong> {{ porcion.fat | round(2) }} g</p>
+        </div>
+
+    </div>
+    {% endif %}
+
+</div>
+
+{% endblock %}

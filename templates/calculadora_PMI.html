@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block title %}Calculadora PMI{% endblock %}
+{% block content %}
+<div class="card p-4">
+    <h4>Calculadora PMI (Peso Ideal)</h4>
+    <form method="post">
+        <div class="mb-3">
+            <label>Altura (cm)</label>
+            <input name="altura" class="form-control" value="{{ altura or '' }}">
+        </div>
+        <div class="mb-3">
+            <label>Sexo</label>
+            <select name="sexo" class="form-select">
+                <option value="">Selecciona</option>
+                <option value="Male" {% if sexo=='Male' %}selected{% endif %}>Male</option>
+                <option value="Female" {% if sexo=='Female' %}selected{% endif %}>Female</option>
+            </select>
+        </div>
+        <button class="btn btn-success" type="submit">Calcular</button>
+    </form>
+
+    {% if pmi is not none %}
+    <hr>
+    <h5>PMI estimado: {{ '%.2f'|format(pmi) }} kg</h5>
+    {% endif %}
+</div>
+{% endblock %}

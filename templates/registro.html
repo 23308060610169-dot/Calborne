@@ -1,163 +1,154 @@
 {% extends "base.html" %}
-{% block title %}Registro - Paso {{ step }}{% endblock %}
+{% block title %}Crear Cuenta{% endblock %}
 
 {% block content %}
 <div class="container py-4">
-  <div class="row justify-content-center">
-    <div class="col-lg-7">
-      <div class="card gothic-card p-4 border-danger">
-        <h3 class="text-danger text-center mb-3">Registro — Paso {{ step }} de {{ total_steps }}</h3>
 
-        <form method="POST">
-          {% if step == 1 %}
-            <div class="mb-3">
-              <label class="form-label">Correo electrónico</label>
-              <input class="form-control gothic-input" name="email" type="email" required value="{{ registro.get('email','') }}">
-            </div>
-            <div class="mb-3">
-              <label class="form-label">Contraseña</label>
-              <input class="form-control gothic-input" name="password" type="password" required>
-            </div>
+  <h2 class="text-center mb-4 text-success">Crear tu Cuenta</h2>
 
-          {% elif step == 2 %}
-            <div class="mb-3">
-              <label class="form-label">Nombre</label>
-              <input class="form-control gothic-input" name="nombre" value="{{ registro.get('nombre','') }}" required>
-            </div>
+  <form method="POST"  class="w-75 mx-auto">
 
-          {% elif step == 3 %}
-            <div class="mb-3">
-              <label class="form-label">Apellido</label>
-              <input class="form-control gothic-input" name="apellido" value="{{ registro.get('apellido','') }}" required>
-            </div>
+    <div class="card p-4 mb-4">
+      <h4 class="mb-3">Datos de acceso</h4>
 
-          {% elif step == 4 %}
-            <div class="mb-3">
-              <label class="form-label">Edad</label>
-              <input class="form-control gothic-input" name="edad" type="number" min="0" value="{{ registro.get('edad','') }}">
-            </div>
+      <div class="mb-3">
+        <label class="form-label">Nombre</label>
+        <input type="text" class="form-control" name="nombre" placeholder="Introduce tu nombre" required>
+      </div>
 
-          {% elif step == 5 %}
-            <div class="mb-3">
-              <label class="form-label">Sexo</label>
-              <select class="form-select gothic-input" name="sexo">
-                <option value="">Selecciona</option>
-                <option value="female" {% if registro.get('sexo')=='female' %}selected{% endif %}>Mujer</option>
-                <option value="male" {% if registro.get('sexo')=='male' %}selected{% endif %}>Hombre</option>
-              </select>
-            </div>
+      <div class="mb-3">
+        <label class="form-label">Apellidos</label>
+        <input type="text" class="form-control" name="apellido" placeholder="Introduce tus apellidos" required>
+      </div>
 
-          {% elif step == 6 %}
-            <div class="mb-3">
-              <label class="form-label">Peso (kg)</label>
-              <input class="form-control gothic-input" name="peso" type="number" step="0.1" value="{{ registro.get('peso','') }}">
-            </div>
+      <div class="mb-3">
+        <label class="form-label">Correo electrónico</label>
+        <input type="email" class="form-control" name="email" placeholder="tucorreo@example.com" required>
+      </div>
 
-          {% elif step == 7 %}
-            <div class="mb-3">
-              <label class="form-label">Altura (cm)</label>
-              <input class="form-control gothic-input" name="altura" type="number" step="0.1" value="{{ registro.get('altura','') }}">
-            </div>
-
-          {% elif step == 8 %}
-            <div class="mb-3">
-              <label class="form-label">Nivel de actividad</label>
-              <input class="form-control gothic-input" name="actividad" placeholder="ej. baja, moderada, alta" value="{{ registro.get('actividad','') }}">
-            </div>
-
-          {% elif step == 9 %}
-            <div class="mb-3">
-              <label class="form-label">Objetivo principal</label>
-              <select class="form-select gothic-input" name="objetivo">
-                <option value="">Selecciona</option>
-                <option value="bajar" {% if registro.get('objetivo')=='bajar' %}selected{% endif %}>Bajar de peso</option>
-                <option value="aumentar" {% if registro.get('objetivo')=='aumentar' %}selected{% endif %}>Aumentar masa muscular</option>
-                <option value="mantener" {% if registro.get('objetivo')=='mantener' %}selected{% endif %}>Mantener peso</option>
-                <option value="digestión" {% if registro.get('objetivo')=='digestión' %}selected{% endif %}>Mejorar digestión</option>
-                <option value="control_condicion" {% if registro.get('objetivo')=='control_condicion' %}selected{% endif %}>Controlar condición (diabetes, hipertensión...)</option>
-              </select>
-            </div>
-
-          {% elif step == 10 %}
-            <div class="mb-3">
-              <label class="form-label">Alergias (ej. maní, mariscos) — separa por comas</label>
-              <input class="form-control gothic-input" name="alergias" value="{{ registro.get('alergias','') }}">
-            </div>
-
-          {% elif step == 11 %}
-            <div class="mb-3">
-              <label class="form-label">Intolerancias (ej. lactosa, gluten) — separa por comas</label>
-              <input class="form-control gothic-input" name="intolerancias" value="{{ registro.get('intolerancias','') }}">
-            </div>
-
-          {% elif step == 12 %}
-            <div class="mb-3">
-              <label class="form-label">Dietas o preferencias (vegana, vegetariana, keto, mediterránea, etc.)</label>
-              <input class="form-control gothic-input" name="dieta" value="{{ registro.get('dieta','') }}">
-            </div>
-
-          {% elif step == 13 %}
-            <div class="mb-3">
-              <label class="form-label">Alimentos que no te gustan (separa por comas)</label>
-              <input class="form-control gothic-input" name="alimentos_no_gustan" value="{{ registro.get('alimentos_no_gustan','') }}">
-            </div>
-
-          {% elif step == 14 %}
-            <div class="mb-3">
-              <label class="form-label">Nivel de experiencia en cocina</label>
-              <select class="form-select gothic-input" name="experiencia_cocina">
-                <option value="">Selecciona</option>
-                <option value="principiante" {% if registro.get('experiencia_cocina')=='principiante' %}selected{% endif %}>Principiante</option>
-                <option value="aficionado" {% if registro.get('experiencia_cocina')=='aficionado' %}selected{% endif %}>Chef aficionado</option>
-                <option value="experto" {% if registro.get('experiencia_cocina')=='experto' %}selected{% endif %}>Experto</option>
-              </select>
-            </div>
-
-          {% elif step == 15 %}
-            <div class="mb-3">
-              <label class="form-label">Condiciones médicas o restricciones (opcional)</label>
-              <textarea class="form-control gothic-input" name="condiciones_medicas" rows="3">{{ registro.get('condiciones_medicas','') }}</textarea>
-            </div>
-
-          {% elif step == 16 %}
-            <div class="mb-3">
-              <label class="form-label">¿Deseas que las calorías no alcanzadas se acumulen al día siguiente?</label>
-              <div>
-                <div class="form-check form-check-inline">
-                  <input class="form-check-input" type="radio" name="acumular_calorias" id="acum_si" value="si" {% if registro.get('acumular_calorias')=='si' %}checked{% endif %}>
-                  <label class="form-check-label" for="acum_si">Sí</label>
-                </div>
-                <div class="form-check form-check-inline">
-                  <input class="form-check-input" type="radio" name="acumular_calorias" id="acum_no" value="no" {% if registro.get('acumular_calorias','no')!='si' %}checked{% endif %}>
-                  <label class="form-check-label" for="acum_no">No</label>
-                </div>
-              </div>
-            </div>
-
-          {% elif step == total_steps %}
-            <h5 class="text-light">Revisar datos</h5>
-            <pre class="bg-dark text-light p-3 small">{{ registro | tojson(indent=2) }}</pre>
-            <div class="form-text mb-3 text-secondary">Revisa tus respuestas. Puedes agregar la cuenta o omitir y volver al inicio.</div>
-            <div class="d-flex gap-2">
-              <button name="action" value="agregar" class="btn btn-danger">Agregar cuenta</button>
-              <button name="action" value="omitir" class="btn btn-outline-danger">Omitir y volver al inicio</button>
-            </div>
-          {% endif %}
-
-          {% if step < total_steps %}
-            <div class="mt-3 d-flex justify-content-between">
-              {% if step > 1 %}
-                <a class="btn btn-outline-secondary" href="{{ url_for('registro', step=step-1) }}">Atrás</a>
-              {% else %}
-                <span></span>
-              {% endif %}
-              <button class="btn btn-danger">Siguiente</button>
-            </div>
-          {% endif %}
-        </form>
-
+      <div class="mb-3">
+        <label class="form-label">Contraseña</label>
+        <input type="password" class="form-control" name="password" placeholder="Crea una contraseña" required>
       </div>
     </div>
-  </div>
+
+    <div class="card p-4 mb-4">
+      <h4 class="mb-3">Datos físicos</h4>
+
+      <div class="row">
+        <div class="col-md-6 mb-3">
+          <label class="form-label">Edad</label>
+          <input type="number" class="form-control" name="edad" placeholder="Ej: 25" required>
+        </div>
+
+        <div class="col-md-6 mb-3">
+          <label class="form-label">Sexo</label>
+          <select class="form-select" name="sexo" required>
+            <option value="" disabled selected>Selecciona una opción</option>
+            <option>Masculino</option>
+            <option>Femenino</option>
+            <option>Otro</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-6 mb-3">
+          <label class="form-label">Peso (kg)</label>
+          <input type="number" class="form-control" name="peso" placeholder="Ej: 75" required>
+        </div>
+
+        <div class="col-md-6 mb-3">
+          <label class="form-label">Altura (cm)</label>
+          <input type="number" class="form-control" name="altura" placeholder="Ej: 170" required>
+        </div>
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label">Nivel de actividad física</label>
+        <select class="form-select" name="actividad" required>
+          <option value="" disabled selected>Selecciona una opción</option>
+          <option>Sedentario</option>
+          <option>Ligero (1-3 días/semana)</option>
+          <option>Moderado (3-5 días/semana)</option>
+          <option>Activo (6-7 días/semana)</option>
+          <option>Atleta</option>
+        </select>
+      </div>
+    </div>
+
+  
+    <div class="card p-4 mb-4">
+      <h4 class="mb-3">Objetivos personales</h4>
+
+      <select class="form-select mb-3" name="objetivo" required>
+        <option value="" disabled selected>Selecciona tu objetivo principal</option>
+        <option>Bajar de peso</option>
+        <option>Aumentar masa muscular</option>
+        <option>Mantener peso</option>
+        <option>Mejorar digestión</option>
+        <option>Controlar una condición médica</option>
+      </select>
+
+      <div class="mb-3">
+        <label class="form-label">Condiciones médicas (opcional)</label>
+        <input type="text" class="form-control" name="condiciones_medicas" placeholder="Ej: Diabetes, hipertensión">
+      </div>
+    </div>
+
+    <div class="card p-4 mb-4">
+      <h4 class="mb-3">Preferencias y restricciones</h4>
+
+      <div class="mb-3">
+        <label class="form-label">Alergias</label>
+        <input type="text" class="form-control" name="alergias" placeholder="Ej: Maní, mariscos">
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label">Intolerancias</label>
+        <input type="text" class="form-control" name="intolerancias" placeholder="Ej: Lactosa, gluten">
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label">Dieta preferida</label>
+        <select class="form-select" name="dieta">
+          <option value="" selected>Ninguna</option>
+          <option>Vegana</option>
+          <option>Vegetariana</option>
+          <option>Keto</option>
+          <option>Mediterránea</option>
+        </select>
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label">Alimentos que no te gustan</label>
+        <input type="text" class="form-control" name="alimentos_no_gustan" placeholder="Ej: Tomate, cebolla">
+      </div>
+    </div>
+
+
+    <div class="card p-4 mb-4">
+      <h4 class="mb-3">Otros datos</h4>
+
+      <div class="mb-3">
+        <label class="form-label">Experiencia en cocina</label>
+        <select class="form-select" name="experiencia_cocina">
+          <option value="" selected>Selecciona una opción</option>
+          <option>Principiante</option>
+          <option>Intermedio</option>
+          <option>Avanzado</option>
+        </select>
+      </div>
+
+      <div class="form-check mb-3">
+        <input class="form-check-input" type="checkbox" name="acumular_calorias" value="Sí">
+        <label class="form-check-label">¿Deseas acumular calorías diarias?</label>
+      </div>
+    </div>
+    <div class="text-center">
+      <button type="submit" class="btn btn-success w-100">Crear cuenta</button>
+    </div>
+
+  </form>
 </div>
 {% endblock %}

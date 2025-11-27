@@ -1,4 +1,15 @@
 from flask import Flask, render_template, request, redirect, url_for, flash, session
+import requests
+
+API_KEY = "DkRmZu9FxAhQFL1DCgLWoMG1z0wwBVUzcOD2sJ0J" 
+
+BASE_URL = "https://api.nal.usda.gov/fdc/v1"
+
+from flask import Flask, render_template, request, session, redirect, url_for, flash
+from spoonacular import search_recipes, get_recipe_info
+import re
+
+
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'theswordoftarnished'
@@ -7,9 +18,17 @@ cazadores = {
     'correo@gmail.com': {
         'password': '1234',
         'nombre': 'administrador',
+        'profile': {
+            'peso': 79,
+            'altura': 170,
+            'edad': 17,
+            'sexo': 'Male',
+            'actividad': 'Media',
+            'objetivo': 70.1,
+            'pasos': 10000
+        }
     }
 }
-
 
 @app.route('/')
 def home():
@@ -17,18 +36,95 @@ def home():
         session['seen_welcome'] = True
         return render_template('welcome.html')
 
-    if session.get('logueado'):
-        email = session.get('usuario_email')
-        usuario = cazadores.get(email, {})
-        profile = usuario.get('profile') or {}
-        peso = profile.get('peso') or profile.get('weight')
-        altura = profile.get('altura') or profile.get('height')
-        edad = profile.get('edad') or profile.get('age')
-        sexo = profile.get('sexo') or profile.get('gender')
-        actividad = profile.get('actividad')
-
-
     return render_template('inicio.html')
+
+
+@app.route('/perfil')
+def perfil():
+
+    email = session.get('usuario_email')
+    entrada = cazadores.get(email)
+    registro = entrada.get('profile', {}) if entrada else {}
+
+    # Construir un dict 'usuario' con los campos que la plantilla espera
+    usuario = {}
+    if entrada:
+        usuario['nombre'] = entrada.get('nombre')
+    # Mover/normalizar campos del profile al nivel superior
+    for k, v in registro.items():
+        usuario[k] = v
+
+    # Mapear 'apellido' -> 'apellidos' si existe
+    if 'apellido' in usuario and 'apellidos' not in usuario:
+        usuario['apellidos'] = usuario.get('apellido')
+
+    # Cálculos seguros: IMC
+    try:
+        peso = float(usuario.get('peso') or 0)
+        altura = float(usuario.get('altura') or 0)
+        if peso > 0 and altura > 0:
+            usuario['imc'] = round(peso / ((altura / 100) ** 2), 1)
+        else:
+            usuario['imc'] = None
+    except Exception:
+        usuario['imc'] = None
+
+    # TMB (Mifflin-St Jeor / Harris-Benedict aproximado usado antes)
+    try:
+        edad = int(usuario.get('edad') or 0)
+        sexo = (usuario.get('sexo') or '').strip().lower()
+        if peso > 0 and altura > 0 and edad > 0:
+            if sexo.startswith('m') or sexo in ('male', 'masculino', 'hombre'):
+                tmb = 88.362 + (13.397 * peso) + (4.799 * altura) - (5.677 * edad)
+            else:
+                tmb = 447.593 + (9.247 * peso) + (3.098 * altura) - (4.330 * edad)
+            usuario['tmb'] = int(round(tmb))
+        else:
+            usuario['tmb'] = None
+    except Exception:
+        usuario['tmb'] = None
+
+    # GCT (factor según actividad)
+    actividad = (usuario.get('actividad') or '').lower()
+    factor = None
+    if 'sed' in actividad or 'baja' in actividad:
+        factor = 1.2
+    elif 'lig' in actividad:
+        factor = 1.375
+    elif 'mod' in actividad or 'media' in actividad:
+        factor = 1.55
+    elif 'act' in actividad or 'activo' in actividad:
+        factor = 1.725
+    elif 'atleta' in actividad:
+        factor = 1.9
+    if usuario.get('tmb') and factor:
+        usuario['gct'] = int(round(usuario['tmb'] * factor))
+    else:
+        usuario['gct'] = None
+
+    try:
+        altura_cm = float(usuario.get('altura') or 0)
+        altura_in = altura_cm / 2.54
+        if altura_in > 0:
+            if sexo.startswith('m') or sexo in ('male', 'masculino', 'hombre'):
+                peso_ideal = 50.0 + 2.3 * (altura_in - 60.0)
+            else:
+                peso_ideal = 45.5 + 2.3 * (altura_in - 60.0)
+            usuario['peso_ideal'] = round(peso_ideal, 1)
+        else:
+            usuario['peso_ideal'] = None
+    except Exception:
+        usuario['peso_ideal'] = None
+
+    if usuario.get('gct'):
+        kcal = usuario['gct']
+        usuario['macros_prote'] = int(round((0.2 * kcal) / 4))
+        usuario['macros_carbs'] = int(round((0.5 * kcal) / 4))
+        usuario['macros_grasas'] = int(round((0.3 * kcal) / 9))
+    else:
+        usuario['macros_prote'] = usuario['macros_carbs'] = usuario['macros_grasas'] = None
+
+    return render_template('perfil.html', usuario=usuario, registro=registro)
 
 @app.route('/iniciar', methods=['GET', 'POST'])
 def iniciar():
@@ -36,16 +132,17 @@ def iniciar():
         return redirect(url_for('home'))
 
     if request.method == 'POST':
-        email = request.form.get('email', '').strip()
+        email_input = request.form.get('email', '').strip()
+        email = email_input.lower()
         password = request.form.get('password', '')
 
-        if not email or not password:
+        if not email_input or not password:
             flash('Que el cazador ingrese su correo y contraseña', 'error')
         elif email in cazadores:
             usuario = cazadores[email]
             if usuario['password'] == password:
                 session['usuario_email'] = email
-                session['cazador'] = usuario['nombre']
+                session['cazador'] = usuario.get('nombre', 'Usuario')
                 session['logueado'] = True
                 flash(f"El cazador {usuario['nombre']} ha despertado nuevamente...", "success")
                 return redirect(url_for('home'))
@@ -60,6 +157,46 @@ def iniciar():
 @app.route('/registro', methods=['GET', 'POST'])
 def registro():
     total_steps = 17
+    if request.method == 'POST' and request.form.get('email') and request.form.get('password') and request.form.get('nombre'):
+        campos = [
+            "email", "password", "nombre", "apellido", "edad", "sexo", "peso",
+            "altura", "actividad", "objetivo", "alergias", "intolerancias",
+            "dieta", "alimentos_no_gustan", "experiencia_cocina",
+            "condiciones_medicas", "acumular_calorias"
+        ]
+        registro = {}
+        for c in campos:
+            registro[c] = request.form.get(c, '').strip()
+
+        email_raw = registro.get('email', '')
+        email = email_raw.strip().lower()
+        nombre = registro.get('nombre', 'Usuario')
+        password = registro.get('password', '')
+
+        if not email or not password:
+            flash('Faltan email o contraseña en los datos de registro.', 'error')
+            return redirect(url_for('registro'))
+
+        if email in cazadores:
+            flash('Ya existe una cuenta con ese correo.', 'error')
+            return redirect(url_for('registro'))
+
+        profile = registro.copy()
+        profile.pop('email', None)
+        profile.pop('password', None)
+
+        cazadores[email] = {
+            'password': password,
+            'nombre': nombre,
+            'profile': profile
+        }
+
+        session['usuario_email'] = email
+        session['cazador'] = nombre
+        session['logueado'] = True
+        flash(f"Cuenta creada. Bienvenido {nombre}.", 'success')
+        return redirect(url_for('perfil'))
+
     try:
         step = int(request.args.get('step', 1))
     except ValueError:
@@ -68,40 +205,16 @@ def registro():
     registro = session.get('registro', {})
 
     if request.method == 'POST':
-        # paso 1: email + password
-        if step == 1:
-            registro['email'] = request.form.get('email', '').strip()
-            registro['password'] = request.form.get('password', '')
-        elif step == 2:
-            registro['nombre'] = request.form.get('nombre', '').strip()
-        elif step == 3:
-            registro['apellido'] = request.form.get('apellido', '').strip()
-        elif step == 4:
-            registro['edad'] = request.form.get('edad', '').strip()
-        elif step == 5:
-            registro['sexo'] = request.form.get('sexo', '').strip()
-        elif step == 6:
-            registro['peso'] = request.form.get('peso', '').strip()
-        elif step == 7:
-            registro['altura'] = request.form.get('altura', '').strip()
-        elif step == 8:
-            registro['actividad'] = request.form.get('actividad', '').strip()
-        elif step == 9:
-            registro['objetivo'] = request.form.get('objetivo', '').strip()
-        elif step == 10:
-            registro['alergias'] = request.form.get('alergias', '').strip()
-        elif step == 11:
-            registro['intolerancias'] = request.form.get('intolerancias', '').strip()
-        elif step == 12:
-            registro['dieta'] = request.form.get('dieta', '').strip()
-        elif step == 13:
-            registro['alimentos_no_gustan'] = request.form.get('alimentos_no_gustan', '').strip()
-        elif step == 14:
-            registro['experiencia_cocina'] = request.form.get('experiencia_cocina', '').strip()
-        elif step == 15:
-            registro['condiciones_medicas'] = request.form.get('condiciones_medicas', '').strip()
-        elif step == 16:
-            registro['acumular_calorias'] = request.form.get('acumular_calorias', 'no')
+        campos = [
+            "email", "password", "nombre", "apellido", "edad", "sexo", "peso",
+            "altura", "actividad", "objetivo", "alergias", "intolerancias",
+            "dieta", "alimentos_no_gustan", "experiencia_cocina",
+            "condiciones_medicas", "acumular_calorias"
+        ]
+
+        campo_actual = campos[step - 1] if step <= len(campos) else None
+        if campo_actual:
+            registro[campo_actual] = request.form.get(campo_actual, '').strip()
         session['registro'] = registro
 
         if step < total_steps:
@@ -109,7 +222,8 @@ def registro():
 
         action = request.form.get('action')
         if action == 'agregar':
-            email = registro.get('email')
+            email_raw = registro.get('email', '')
+            email = email_raw.strip().lower()
             nombre = registro.get('nombre', 'Usuario')
             password = registro.get('password', '')
             if not email or not password:
@@ -118,13 +232,23 @@ def registro():
             if email in cazadores:
                 flash('Ya existe una cuenta con ese correo.', 'error')
                 return redirect(url_for('registro', step=1))
-            cazadores[email] = {'password': password, 'nombre': nombre, 'profile': registro}
+
+            profile = registro.copy()
+            profile.pop('email', None)
+            profile.pop('password', None)
+
+            cazadores[email] = {
+                'password': password,
+                'nombre': nombre,
+                'profile': profile
+            }
+
             session['usuario_email'] = email
             session['cazador'] = nombre
             session['logueado'] = True
             session.pop('registro', None)
             flash(f"Cuenta creada. Bienvenido {nombre}.", 'success')
-            return redirect(url_for('home'))
+            return redirect(url_for('perfil'))
         else:
             session.pop('registro', None)
             flash('Registro omitido. Puedes completar el perfil más tarde.', 'info')
@@ -132,12 +256,277 @@ def registro():
 
     return render_template('registro.html', step=step, total_steps=total_steps, registro=registro)
 
-
 @app.route('/cerrar')
 def cerrar():
     session.clear()
     flash("El cazador ha regresado a su sueño...", "danger")
     return redirect(url_for('home'))
+
+@app.route('/registro_alimentos')
+def registro_alimentos():
+
+    return redirect(url_for('perfil'))
+
+@app.route('/calculadora_IMC', methods=['GET', 'POST'])
+def calculadora_IMC():
+    imc = None
+    peso = None
+    altura = None
+    if request.method == 'POST':
+        try:
+            peso = float(request.form.get('peso') or 0)
+            altura = float(request.form.get('altura') or 0)
+            if peso > 0 and altura > 0:
+                imc = peso / ((altura / 100) ** 2)
+        except ValueError:
+            imc = None
+    return render_template('calculadora_IMC.html', imc=imc, peso=peso, altura=altura)
+
+@app.route('/calculadora_TMB', methods=['GET', 'POST'])
+def calculadora_TMB():
+    tmb = None
+    peso = None
+    altura = None
+    edad = None
+    sexo = ''
+    if request.method == 'POST':
+        try:
+            peso = float(request.form.get('peso') or 0)
+            altura = float(request.form.get('altura') or 0)
+            edad = int(request.form.get('edad') or 0)
+            sexo = request.form.get('sexo', '')
+            if peso > 0 and altura > 0 and edad > 0:
+                if sexo == 'Male':
+                    tmb = 88.362 + (13.397 * peso) + (4.799 * altura) - (5.677 * edad)
+                elif sexo == 'Female':
+                    tmb = 447.593 + (9.247 * peso) + (3.098 * altura) - (4.330 * edad)
+        except ValueError:
+            tmb = None
+    return render_template('calculadora_TMB.html', tmb=tmb, peso=peso, altura=altura, edad=edad, sexo=sexo)
+
+@app.route('/calculadora_GCT', methods=['GET', 'POST'])
+def calculadora_GCT():
+    gct = None
+    tmb = None
+    actividad = ''
+    if request.method == 'POST':
+        try:
+            tmb = float(request.form.get('tmb') or 0)
+            actividad = request.form.get('actividad', '')
+            if tmb and actividad:
+                if actividad == 'Baja':
+                    gct = tmb * 1.2
+                elif actividad == 'Media':
+                    gct = tmb * 1.55
+                elif actividad == 'Alta':
+                    gct = tmb * 1.9
+        except ValueError:
+            gct = None
+    return render_template('calculadora_GCT.html', gct=gct, tmb=tmb, actividad=actividad)
+
+@app.route('/calculadora_PMI', methods=['GET', 'POST'])
+def calculadora_PMI():
+    pmi = None
+    sexo = ''
+    altura = None
+    altura_in = None
+    if request.method == 'POST':
+        try:
+            altura = float(request.form.get('altura') or 0)  # cm
+            sexo = request.form.get('sexo', '')
+            if altura and sexo:
+                altura_in = altura / 2.54
+                if sexo == 'Male':
+                    pmi = 50.0 + 2.3 * (altura_in - 60.0)
+                elif sexo == 'Female':
+                    pmi = 45.5 + 2.3 * (altura_in - 60.0)
+        except ValueError:
+            pmi = None
+    return render_template('calculadora_PMI.html', pmi=pmi, sexo=sexo, altura=altura)
+
+
+@app.route("/articulos")
+def articulos():
+    return render_template("articulos.html")
+
+
+from usda_api import buscar_alimento, obtener_nutrientes
+
+@app.route("/analizador", methods=["GET", "POST"])
+def analizador():
+    if request.method == "POST":
+        texto = request.form["ingredientes"]
+        porciones = int(request.form["porciones"])
+        lineas = texto.split("\n")
+
+        resultados = []
+        total_cal = total_prot = total_carbs = total_fat = 0
+
+        for linea in lineas:
+            item = linea.strip()
+            if not item:
+                continue
+
+            busqueda = buscar_alimento(item)
+            if "foods" not in busqueda or not busqueda["foods"]:
+                continue
+
+            alimento = busqueda["foods"][0]
+            fdc_id = alimento["fdcId"]
+            data = obtener_nutrientes(fdc_id)
+
+            cal = next((n["value"] for n in data["foodNutrients"] if n["nutrientName"] == "Energy"), 0)
+            prot = next((n["value"] for n in data["foodNutrients"] if n["nutrientName"] == "Protein"), 0)
+            carbs = next((n["value"] for n in data["foodNutrients"] if n["nutrientName"] == "Carbohydrate, by difference"), 0)
+            fat = next((n["value"] for n in data["foodNutrients"] if n["nutrientName"] == "Total lipid (fat)"), 0)
+
+            resultados.append({
+                "nombre": alimento["description"],
+                "cal": cal,
+                "prot": prot,
+                "carbs": carbs,
+                "fat": fat
+            })
+
+            total_cal += cal
+            total_prot += prot
+            total_carbs += carbs
+            total_fat += fat
+
+        porcion = {
+            "cal": total_cal / porciones,
+            "prot": total_prot / porciones,
+            "carbs": total_carbs / porciones,
+            "fat": total_fat / porciones,
+        }
+
+        return render_template("analizador.html",
+                               resultados=resultados,
+                               totales={
+                                   "cal": total_cal,
+                                   "prot": total_prot,
+                                   "carbs": total_carbs,
+                                   "fat": total_fat
+                               },
+                               porcion=porcion,
+                               porciones=porciones
+                               )
+
+    return render_template("analizador.html")
+
+
+@app.route("/recetas", methods=["GET", "POST"])
+def recetas():
+    recetas = None
+    if request.method == "POST":
+        q = request.form.get("query", "").strip()
+        if q:
+            data = search_recipes(q, number=12)
+            recetas = []
+            for r in data.get("results", []):
+                recetas.append({
+                    "id": r.get("id"),
+                    "nombre": r.get("title"),
+                    "imagen": r.get("image"),
+                    "descripcion": r.get("summary")[:140] if r.get("summary") else "",
+                    "tiempo": r.get("readyInMinutes") or ""
+                })
+    return render_template("recetas.html", recetas=recetas)
+
+@app.route("/receta/<int:spoon_id>")
+def receta_detalle(spoon_id):
+    info = get_recipe_info(spoon_id)
+
+    receta = {
+        "id": spoon_id,
+        "nombre": info.get("title"),
+        "imagen": info.get("image"),
+        "servings": info.get("servings") or 1,
+        "readyInMinutes": info.get("readyInMinutes"),
+        "instructions": info.get("instructions"),
+        "ingredients": []
+    }
+
+    nutrientes_por_ingrediente = []
+    for ing in info.get("extendedIngredients", []):
+        original = ing.get("originalString") or f"{ing.get('amount')} {ing.get('unit')} {ing.get('name')}"
+        query_text = f"{ing.get('amount', '')} {ing.get('unit', '')} {ing.get('name', '')}".strip()
+
+        
+        search = search_foods(query_text, pageSize=2)
+        foods = search.get("foods", [])
+        chosen = None
+        if foods:
+            chosen = foods[0]    
+            fdc_id = chosen.get("fdcId")
+            food_detail = get_food(fdc_id)
+            nutrients = extract_nutrients(food_detail)
+
+            cantidad = ing.get("amount", 1)
+            unidad = ing.get("unit", "").lower()
+
+            gramos = None
+            if unidad in ("g", "gram", "grams"):
+                gramos = float(cantidad)
+            elif unidad in ("kg", "kilogram", "kilograms"):
+                gramos = float(cantidad) * 1000
+            elif unidad in ("mg", "milligram"):
+                gramos = float(cantidad) / 1000
+            elif unidad in ("cup", "cups"):
+                gramos = float(cantidad) * 240
+            elif unidad in ("tbsp", "tablespoon", "tablespoons"):
+                gramos = float(cantidad) * 15
+            elif unidad in ("tsp", "teaspoon", "teaspoons"):
+                gramos = float(cantidad) * 5
+            else:
+                gramos = None
+
+            escala = None
+            if gramos is not None:
+                escala = gramos / 100.0
+            else:
+                escala = 1.0
+
+            scaled = {
+                "original": original,
+                "chosen_description": chosen.get("description"),
+                "gramos": gramos,
+                "cal": round(nutrients["energy"] * escala, 2),
+                "prot": round(nutrients["protein"] * escala, 2),
+                "carbs": round(nutrients["carbs"] * escala, 2),
+                "fat": round(nutrients["fat"] * escala, 2)
+            }
+        else:
+            scaled = {
+                "original": original,
+                "chosen_description": None,
+                "gramos": None,
+                "cal": 0,
+                "prot": 0,
+                "carbs": 0,
+                "fat": 0
+            }
+
+        nutrientes_por_ingrediente.append(scaled)
+        receta["ingredients"].append({"original": original})
+
+    total_cal = sum(i["cal"] for i in nutrientes_por_ingrediente)
+    total_prot = sum(i["prot"] for i in nutrientes_por_ingrediente)
+    total_carbs = sum(i["carbs"] for i in nutrientes_por_ingrediente)
+    total_fat = sum(i["fat"] for i in nutrientes_por_ingrediente)
+
+    receta["nutrientes"] = {
+        "cal": round(total_cal, 2),
+        "prot": round(total_prot, 2),
+        "carbs": round(total_carbs, 2),
+        "fat": round(total_fat, 2)
+    }
+
+    receta["ingredientes_nut"] = nutrientes_por_ingrediente
+
+    return render_template("receta_detalle.html", receta=receta)
+
+
 
 
 if __name__ == '__main__':
