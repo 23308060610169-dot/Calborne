@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+{% block title %}Guía básica de macronutrientes — CALBORNE{% endblock %}
+{% block content %}
+<div class="container my-5">
+  <div class="card p-4">
+    <h1 class="mb-3">Guía básica de macronutrientes</h1>
+    <p class="text-muted">Proteínas, carbohidratos y grasas: qué son, por qué importan y cómo distribuirlos según tus objetivos.</p>
+
+    <section class="mt-4">
+      <h4>Proteínas</h4>
+      <p>Función: reparación y crecimiento muscular, soporte inmunológico y saciedad. Fuentes comunes: carnes magras, huevos, pescado, lácteos, legumbres y frutos secos.</p>
+      <p class="mb-0"><strong>Recomendación práctica:</strong> 1.2–2.0 g/kg de peso corporal para personas activas; ajusta según objetivo (más para aumento de masa muscular).</p>
+    </section>
+
+    <section class="mt-4">
+      <h4>Carbohidratos</h4>
+      <p>Función: principal fuente de energía para entrenamiento y actividad diaria. Prioriza carbohidratos complejos (cereales integrales, patata, arroz, avena, legumbres) y fibra para saciedad y salud digestiva.</p>
+      <p class="mb-0"><strong>Uso estratégico:</strong> sitúa la mayor parte de carbohidratos alrededor de entrenamientos para rendimiento y recuperación.</p>
+    </section>
+
+    <section class="mt-4">
+      <h4>Grasas</h4>
+      <p>Función: soporte hormonal, absorción de vitaminas liposolubles y fuente densa de energía. Favorce grasas insaturadas (aceite de oliva, aguacate, frutos secos, pescados grasos) y limita grasas trans.</p>
+      <p class="mb-0"><strong>Recomendación práctica:</strong> 20–35% del total calórico, ajustando según tolerancia y preferencias.</p>
+    </section>
+
+    <section class="mt-4">
+      <h4>Cómo distribuir macros (ejemplo inicial)</h4>
+      <p>Un punto de partida común para la mayoría: 20% proteínas / 50% carbohidratos / 30% grasas. Ajusta según objetivo:</p>
+      <ul>
+        <li>Perder grasa: algo más de proteína y menos carbohidratos (p. ej. 25/40/35).</li>
+        <li>Ganar masa muscular: más calorías y mayor aporte de carbohidratos y proteína (p. ej. 25/50/25).</li>
+        <li>Mantenimiento: distribución equilibrada según preferencias.</li>
+      </ul>
+    </section>
+
+    <section class="mt-4">
+      <h4>Ejemplo práctico</h4>
+      <p>Si tu GCT es 2400 kcal/día y usas 20/50/30:</p>
+      <ul>
+        <li>Proteína: 20% → 480 kcal → 120 g (480/4)</li>
+        <li>Carbohidratos: 50% → 1200 kcal → 300 g (1200/4)</li>
+        <li>Grasas: 30% → 720 kcal → 80 g (720/9)</li>
+      </ul>
+      <p class="mb-0">Ajusta en función de progreso, saciedad y rendimiento.</p>
+    </section>
+
+    <section class="mt-4">
+      <h4>Consejos prácticos</h4>
+      <ul>
+        <li>Mide y ajusta: evalúa progreso cada 2–4 semanas y modifica macros o kcal según resultados.</li>
+        <li>No olvides micronutrientes: frutas, verduras y variedad aseguran vitaminas y minerales.</li>
+        <li>Preferencias y adherencia: el mejor plan es el que puedes mantener.</li>
+        <li>Si tienes condiciones médicas específicas, consulta con un profesional.</li>
+      </ul>
+    </section>
+
+    <div class="mt-4 d-flex justify-content-between">
+      <a href="{{ url_for('articulos') }}" class="btn btn-outline-success">Volver a artículos</a>
+      <a href="{{ url_for('perfil') }}" class="btn btn-success">Ver mi perfil</a>
+    </div>
+  </div>
+</div>
+{% endblock %}

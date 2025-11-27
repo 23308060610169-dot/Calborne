@@ -26,6 +26,7 @@
 
             <div class="collapse navbar-collapse justify-content-end" id="navbarMenu">
 
+            {% if session.get('logueado') %}
                 <div class="dropdown me-3">
                     <a href="#" class="nav-link dropdown-toggle fw-semibold" data-bs-toggle="dropdown">
                         Calculadoras
@@ -42,7 +43,6 @@
                     </ul>
                 </div>
 
-                {% if session.get('logueado') %}
 
                 <div class="dropdown">
                     <a href="#" class="d-flex align-items-center text-dark text-decoration-none dropdown-toggle"
@@ -60,6 +60,20 @@
                 </div>
 
                 {% else %}
+                                <div class="dropdown me-3">
+                    <a href="#" class="nav-link dropdown-toggle fw-semibold" data-bs-toggle="dropdown">
+                        Calculadoras
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end">
+                        <li><a class="dropdown-item " href="{{ url_for('calculadora_IMC') }}">Índice IMC</a></li>
+                        <li><a class="dropdown-item" href="{{ url_for('calculadora_TMB') }}">Tasa Metabólica Basal</a></li>
+                        <li><a class="dropdown-item" href="{{ url_for('calculadora_GCT') }}">Gasto Calórico Total</a></li>
+                        <li><a class="dropdown-item" href="{{ url_for('calculadora_PMI') }}">Peso Ideal</a></li>
+
+                    </ul>
+                </div>
+
+
 
                 <div class="d-flex">
                     <a href="{{ url_for('iniciar') }}" class="btn btn-outline-success me-2">Iniciar sesión</a>

@@ -46,19 +46,15 @@ def perfil():
     entrada = cazadores.get(email)
     registro = entrada.get('profile', {}) if entrada else {}
 
-    # Construir un dict 'usuario' con los campos que la plantilla espera
     usuario = {}
     if entrada:
         usuario['nombre'] = entrada.get('nombre')
-    # Mover/normalizar campos del profile al nivel superior
     for k, v in registro.items():
         usuario[k] = v
 
-    # Mapear 'apellido' -> 'apellidos' si existe
     if 'apellido' in usuario and 'apellidos' not in usuario:
         usuario['apellidos'] = usuario.get('apellido')
 
-    # Cálculos seguros: IMC
     try:
         peso = float(usuario.get('peso') or 0)
         altura = float(usuario.get('altura') or 0)
@@ -69,7 +65,6 @@ def perfil():
     except Exception:
         usuario['imc'] = None
 
-    # TMB (Mifflin-St Jeor / Harris-Benedict aproximado usado antes)
     try:
         edad = int(usuario.get('edad') or 0)
         sexo = (usuario.get('sexo') or '').strip().lower()
@@ -84,7 +79,6 @@ def perfil():
     except Exception:
         usuario['tmb'] = None
 
-    # GCT (factor según actividad)
     actividad = (usuario.get('actividad') or '').lower()
     factor = None
     if 'sed' in actividad or 'baja' in actividad:
@@ -355,58 +349,81 @@ from usda_api import buscar_alimento, obtener_nutrientes
 @app.route("/analizador", methods=["GET", "POST"])
 def analizador():
     if request.method == "POST":
-        texto = request.form["ingredientes"]
-        porciones = int(request.form["porciones"])
-        lineas = texto.split("\n")
+        texto = request.form.get("ingredientes", "")
+        try:
+            porciones = int(request.form.get("porciones", 1)) or 1
+        except Exception:
+            porciones = 1
+
+        lineas = [l.strip() for l in texto.splitlines() if l.strip()]
 
         resultados = []
-        total_cal = total_prot = total_carbs = total_fat = 0
+        total_cal = total_prot = total_carbs = total_fat = 0.0
+
+        def _find_value(nutrients, keywords):
+            for n in nutrients:
+                # varios formatos posibles en la API USDA
+                name = n.get("nutrientName") or (n.get("nutrient") or {}).get("name") or n.get("name") or ""
+                name_l = str(name).lower()
+                if any(k in name_l for k in keywords):
+                    val = n.get("value") or n.get("amount") or 0
+                    try:
+                        return float(val)
+                    except Exception:
+                        return 0.0
+            return 0.0
 
         for linea in lineas:
-            item = linea.strip()
-            if not item:
+            # buscar el alimento (usar la primera coincidencia)
+            busq = buscar_alimento(linea, pageSize=1)
+            foods = busq.get("foods") or []
+            if not foods:
+                resultados.append({
+                    "nombre": linea,
+                    "cal": 0.0, "prot": 0.0, "carbs": 0.0, "fat": 0.0,
+                    "fuente": "no encontrado"
+                })
                 continue
 
-            busqueda = buscar_alimento(item)
-            if "foods" not in busqueda or not busqueda["foods"]:
-                continue
+            food = foods[0]
+            fdc = food.get("fdcId") or food.get("fdcId")  # robustez
+            data = obtener_nutrientes(fdc) if fdc else food
 
-            alimento = busqueda["foods"][0]
-            fdc_id = alimento["fdcId"]
-            data = obtener_nutrientes(fdc_id)
+            nutrients = data.get("foodNutrients") or data.get("foodNutrients", []) or []
 
-            cal = next((n["value"] for n in data["foodNutrients"] if n["nutrientName"] == "Energy"), 0)
-            prot = next((n["value"] for n in data["foodNutrients"] if n["nutrientName"] == "Protein"), 0)
-            carbs = next((n["value"] for n in data["foodNutrients"] if n["nutrientName"] == "Carbohydrate, by difference"), 0)
-            fat = next((n["value"] for n in data["foodNutrients"] if n["nutrientName"] == "Total lipid (fat)"), 0)
-
-            resultados.append({
-                "nombre": alimento["description"],
-                "cal": cal,
-                "prot": prot,
-                "carbs": carbs,
-                "fat": fat
-            })
+            cal = _find_value(nutrients, ["energy", "kcal", "enerc"])
+            prot = _find_value(nutrients, ["protein"])
+            carbs = _find_value(nutrients, ["carbohyd", "carbo", "carb"])
+            fat = _find_value(nutrients, ["fat", "lipid", "total lipid"])
 
             total_cal += cal
             total_prot += prot
             total_carbs += carbs
             total_fat += fat
 
+            resultados.append({
+                "nombre": food.get("description") or linea,
+                "cal": round(cal, 2),
+                "prot": round(prot, 2),
+                "carbs": round(carbs, 2),
+                "fat": round(fat, 2),
+                "fuente": "USDA"
+            })
+
         porcion = {
-            "cal": total_cal / porciones,
-            "prot": total_prot / porciones,
-            "carbs": total_carbs / porciones,
-            "fat": total_fat / porciones,
+            "cal": (total_cal / porciones) if porciones else 0,
+            "prot": (total_prot / porciones) if porciones else 0,
+            "carbs": (total_carbs / porciones) if porciones else 0,
+            "fat": (total_fat / porciones) if porciones else 0,
         }
 
         return render_template("analizador.html",
                                resultados=resultados,
                                totales={
-                                   "cal": total_cal,
-                                   "prot": total_prot,
-                                   "carbs": total_carbs,
-                                   "fat": total_fat
+                                   "cal": round(total_cal, 2),
+                                   "prot": round(total_prot, 2),
+                                   "carbs": round(total_carbs, 2),
+                                   "fat": round(total_fat, 2)
                                },
                                porcion=porcion,
                                porciones=porciones
@@ -526,7 +543,24 @@ def receta_detalle(spoon_id):
 
     return render_template("receta_detalle.html", receta=receta)
 
-
+@app.route('/ComoCal')
+def como_cal():
+    return render_template('comocal.html')
+@app.route('/Macros')
+def Macros():
+    return render_template('Macros.html')
+@app.route('/NEAT')
+def NEAT():
+    return render_template('NEAT.html')
+@app.route('/QueIMC')
+def QueIMC():
+    return render_template('QueIMC.html')
+@app.route('/Entrenamiento')
+def Entrenamiento():
+    return render_template('Entrenamiento.html')
+@app.route('/sueño')
+def sueño():
+    return render_template('sueño.html')
 
 
 if __name__ == '__main__':

@@ -1,0 +1,92 @@
+{% extends "base.html" %}
+{% block title %}Entrenamiento para principiantes — CALBORNE{% endblock %}
+{% block content %}
+<div class="container my-5">
+  <div class="card p-4">
+    <h1 class="mb-3">Entrenamiento para principiantes</h1>
+    <p class="text-muted">Comienza de forma segura y progresiva: combina fuerza, movilidad y cardio para crear hábitos y reducir el riesgo de lesiones.</p>
+
+    <section class="mt-4">
+      <h4>Principios básicos</h4>
+      <ul>
+        <li><strong>Frecuencia:</strong> 2–4 sesiones por semana según disponibilidad.</li>
+        <li><strong>Progresión:</strong> aumenta repeticiones, series o carga de forma gradual.</li>
+        <li><strong>Técnica primero:</strong> prioriza ejecución sobre peso.</li>
+        <li><strong>Recuperación:</strong> duerme bien y deja 48 h entre sesiones de fuerza para el mismo grupo muscular.</li>
+      </ul>
+    </section>
+
+    <section class="mt-4">
+      <h4>Calentamiento (5–10 min)</h4>
+      <p>Ejemplo: 3–5 min de cardio suave (caminata, bici), seguido de movilidad articular y 2 series ligeras de los ejercicios principales.</p>
+    </section>
+
+    <section class="mt-4">
+      <h4>Rutina inicial sugerida (3 días, full-body dividido)</h4>
+      <p class="mb-2"><em>Formato recomendado: 3 series de 8–12 repeticiones por ejercicio (ajusta según nivel).</em></p>
+      <div class="row">
+        <div class="col-md-4">
+          <h6>Día A</h6>
+          <ul>
+            <li>Sentadillas o sentadillas con mancuerna — 3x8–12</li>
+            <li>Press de pecho (mancuernas) — 3x8–12</li>
+            <li>Remo con mancuerna/correa — 3x8–12</li>
+            <li>Plancha 3x30–60s</li>
+          </ul>
+        </div>
+        <div class="col-md-4">
+          <h6>Día B</h6>
+          <ul>
+            <li>Peso muerto rumano o puente de glúteo — 3x8–12</li>
+            <li>Press militar o elevaciones — 3x8–12</li>
+            <li>Jalón al pecho o dominadas asistidas — 3x8–12</li>
+            <li>Farmer carries o caminata — 3x30–60s</li>
+          </ul>
+        </div>
+        <div class="col-md-4">
+          <h6>Día C</h6>
+          <ul>
+            <li>Sentadillas búlgaras o estocadas — 3x8–12</li>
+            <li>Fondos asistidos o press inclinado — 3x8–12</li>
+            <li>Remo invertido o remo — 3x8–12</li>
+            <li>Trabajo de core y movilidad — 10–15 min</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section class="mt-4">
+      <h4>Progresión y ajustes</h4>
+      <ul>
+        <li>Si completas las series y repeticiones con buena técnica, añade carga o 1–2 repeticiones más la sesión siguiente.</li>
+        <li>Si te fatigas excesivamente, reduce volumen o añade días de descanso.</li>
+        <li>Varía ejercicios cada 6–8 semanas para evitar estancamiento.</li>
+      </ul>
+    </section>
+
+    <section class="mt-4">
+      <h4>Movilidad y prevención de lesiones</h4>
+      <p>Incluye estiramientos dinámicos en el calentamiento y movilidad específica (caderas, hombros, columna). Escucha al cuerpo y detén ejercicios que causen dolor agudo.</p>
+    </section>
+
+    <section class="mt-4">
+      <h4>Nutrición y recuperación</h4>
+      <p>Consume suficiente proteína (p. ej. 1.2–2.0 g/kg para personas activas), hidratos para entrenar con energía y grasas saludables. Prioriza sueño y control de estrés para mejores adaptaciones.</p>
+    </section>
+
+    <section class="mt-4">
+      <h4>Consejos finales</h4>
+      <ol>
+        <li>Consistencia > intensidad temprana: mejor entrenar 3 veces por semana durante meses que una rutina extrema esporádica.</li>
+        <li>Registra cargas y repeticiones para seguir la progresión.</li>
+        <li>Considera asesoría profesional si tienes lesiones o condiciones médicas.</li>
+      </ol>
+    </section>
+
+    <div class="mt-4 d-flex justify-content-between">
+      <a href="{{ url_for('articulos') }}" class="btn btn-outline-success">Volver a artículos</a>
+      <a href="{{ url_for('perfil') }}" class="btn btn-success">Ver mi perfil</a>
+    </div>
+  </div>
+</div>
+{% endblock %}

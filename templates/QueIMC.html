@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+{% block title %}¿Qué es el IMC y por qué importa? — CALBORNE{% endblock %}
+{% block content %}
+<div class="container my-5">
+  <div class="card p-4">
+    <h1 class="mb-3">¿Qué es el IMC y por qué importa?</h1>
+    <p class="text-muted">El Índice de Masa Corporal (IMC) es una herramienta simple para relacionar el peso y la estatura. Sirve como indicador inicial de riesgo nutricional a nivel poblacional, pero no reemplaza una evaluación clínica completa.</p>
+
+    <section class="mt-4">
+      <h4>Cómo se calcula</h4>
+      <p><strong>IMC = peso (kg) / altura (m)²</strong>. Ejemplo: 75 kg y 1.75 m → IMC = 75 / (1.75²) ≈ 24.5.</p>
+      <a class="btn btn-outline-success btn-sm mt-2" href="{{ url_for('calculadora_IMC') }}">Usar calculadora IMC</a>
+    </section>
+
+    <section class="mt-4">
+      <h4>Rangos orientativos</h4>
+      <ul>
+        <li><strong>&lt; 18.5</strong> — Bajo peso</li>
+        <li><strong>18.5 – 24.9</strong> — Peso normal</li>
+        <li><strong>25.0 – 29.9</strong> — Sobrepeso</li>
+        <li><strong>≥ 30.0</strong> — Obesidad</li>
+      </ul>
+    </section>
+
+    <section class="mt-4">
+      <h4>Limitaciones importantes</h4>
+      <p>El IMC no distingue entre masa muscular y masa grasa, ni indica la distribución de la grasa corporal. Personas muy musculosas, atletas, ancianos con sarcopenia o individuos con retención de líquidos pueden tener IMC engañosos.</p>
+    </section>
+
+    <section class="mt-4">
+      <h4>Medidas complementarias</h4>
+      <ul>
+        <li><strong>Circunferencia de cintura:</strong> evalúa grasa abdominal (riesgo metabólico). Valores de alerta: >88 cm en mujeres y >102 cm en hombres (orientativo).</li>
+        <li><strong>Composición corporal:</strong> bioimpedancia o pliegues cutáneos para distinguir masa grasa y muscular.</li>
+        <li><strong>Evaluación clínica:</strong> historial, presión arterial, glucosa y lípidos aportan contexto al riesgo.</li>
+      </ul>
+    </section>
+
+    <section class="mt-4">
+      <h4>Qué hacer según tu IMC</h4>
+      <p>No tomes decisiones drásticas solo por el IMC. Si estás fuera del rango normal:</p>
+      <ul>
+        <li>Consulta con un profesional de la salud para interpretar resultados y evaluar composición corporal.</li>
+        <li>Si buscas perder peso: prioriza déficit calórico moderado, proteína adecuada y entrenamiento de fuerza.</li>
+        <li>Si buscas ganar masa muscular: asegúrate de un leve superávit calórico y entrenamiento progresivo.</li>
+      </ul>
+    </section>
+
+    <section class="mt-4">
+      <h4>Consejos prácticos</h4>
+      <ol>
+        <li>Usa el IMC como referencia inicial, no como diagnóstico definitivo.</li>
+        <li>Mide cintura y registra progresos en fuerza, medidas y sensación general.</li>
+        <li>Evalúa cambios cada 2–4 semanas y ajusta estrategias gradualmente.</li>
+      </ol>
+    </section>
+
+    <div class="mt-4 d-flex justify-content-between">
+      <a href="{{ url_for('articulos') }}" class="btn btn-outline-success">Volver a artículos</a>
+      <a href="{{ url_for('calculadora_IMC') }}" class="btn btn-success">Calcular mi IMC</a>
+    </div>
+  </div>
+</div>
+{% endblock %}

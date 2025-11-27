@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+{% block title %}¿Qué es el NEAT? — CALBORNE{% endblock %}
+{% block content %}
+<div class="container my-5">
+  <div class="card p-4">
+    <h1 class="mb-3">¿Qué es el NEAT?</h1>
+    <p class="text-muted">NEAT (Non‑Exercise Activity Thermogenesis) es la energía que gastas en todas las actividades del día que no son ejercicio formal: caminar, estar de pie, tareas del hogar, gestos, etc.</p>
+
+    <section class="mt-4">
+      <h4>Ejemplos de NEAT</h4>
+      <ul>
+        <li>Caminar al transporte o por la oficina.</li>
+        <li>Subir escaleras en vez de usar el ascensor.</li>
+        <li>Tareas domésticas (limpieza, jardinería).</li>
+        <li>Movilidad durante el trabajo (levantarse, pasear mientras hablas por teléfono).</li>
+      </ul>
+    </section>
+
+    <section class="mt-4">
+      <h4>Por qué importa</h4>
+      <p>El NEAT puede suponer diferencias de varias centenas de kcal al día entre personas. En programas de pérdida de grasa o mantenimiento, aumentar el NEAT es una forma eficaz de gastar más calorías sin añadir sesiones de entrenamiento adicionales.</p>
+    </section>
+
+    <section class="mt-4">
+      <h4>Estimaciones típicas</h4>
+      <p>Rangos aproximados de gasto extra por actividad añadida:</p>
+      <ul>
+        <li>Caminar 30 min extra: 100–200 kcal (según peso e intensidad).</li>
+        <li>Subir escaleras 10 min: 50–100 kcal.</li>
+        <li>Aumentar pausas activas en el trabajo: +50–150 kcal/día.</li>
+      </ul>
+      <p class="mb-0 text-muted">Estos valores son orientativos y dependen de la persona.</p>
+    </section>
+
+    <section class="mt-4">
+      <h4>Cómo aumentarlo de forma práctica</h4>
+      <ul>
+        <li>Camina más: pequeñas rutas a pie, aparca más lejos, usa escalera.</li>
+        <li>Incrementa movimientos en casa: tareas, baile, jardinería.</li>
+        <li>Establece recordatorios activos: levántate cada hora y camina 3–5 minutos.</li>
+        <li>Usa un podómetro o reloj para aumentar pasos diarios (p. ej. +1000–3000 pasos).</li>
+      </ul>
+    </section>
+
+    <section class="mt-4">
+      <h4>Medición y seguimiento</h4>
+      <p>Usa un contador de pasos o tu móvil para seguir la actividad diaria. Anota cambios y observa peso, energía y composición corporal para ajustar estrategias.</p>
+    </section>
+
+    <section class="mt-4">
+      <h4>Consideraciones</h4>
+      <ul>
+        <li>Incrementar NEAT es sostenible y suele mejorar salud general.</li>
+        <li>No sustituye entrenamiento de fuerza si el objetivo es ganar músculo.</li>
+        <li>Si tienes limitaciones físicas, adapta las recomendaciones con un profesional.</li>
+      </ul>
+    </section>
+
+    <div class="mt-4 d-flex justify-content-between">
+      <a href="{{ url_for('articulos') }}" class="btn btn-outline-success">Volver a artículos</a>
+      <a href="{{ url_for('perfil') }}" class="btn btn-success">Ver mi perfil</a>
+    </div>
+  </div>
+</div>
+{% endblock %}

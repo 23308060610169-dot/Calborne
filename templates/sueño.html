@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="container my-5">
+    <div class="row g-4">
+        <div class="col-12">
+            <h1 class="text-center mb-3 fw-bold">Cómo mejorar tu sueño</h1>
+            <p class="text-center text-muted mb-4">
+                Dormir bien es fundamental para la recuperación, el rendimiento físico y el control del peso.
+            </p>
+        </div>
+
+        <div class="col-lg-8">
+            <div class="card shadow-sm h-100">
+                <div class="card-body">
+                    <h5 class="card-title">Por qué el sueño importa</h5>
+                    <p class="card-text">
+                        El sueño regula hormonas relacionadas con el apetito y la recuperación muscular, mejora la memoria y
+                        favorece la reparación celular. La falta de sueño crónica puede aumentar el hambre, reducir la energía
+                        para entrenar y dificultar la pérdida de grasa.
+                    </p>
+
+                    <h6 class="mt-4">Recomendaciones prácticas</h6>
+                    <ul class="list-group list-group-flush mt-2">
+                        <li class="list-group-item">Mantén un horario regular: acuéstate y levántate a la misma hora todos los días.</li>
+                        <li class="list-group-item">Crea una rutina relajante antes de dormir: lectura ligera, estiramientos suaves o respiración.</li>
+                        <li class="list-group-item">Limita la exposición a pantallas 60–90 minutos antes de acostarte.</li>
+                        <li class="list-group-item">Controla la cafeína: evita consumo tardío (al menos 6 horas antes de dormir).</li>
+                        <li class="list-group-item">Optimiza el entorno: habitación oscura, fresca y silenciosa.</li>
+                        <li class="list-group-item">Haz ejercicio regularmente, pero evita entrenamientos muy intensos justo antes de acostarte.</li>
+                    </ul>
+
+                    <h6 class="mt-4">Duración recomendada</h6>
+                    <p class="card-text">
+                        Para adultos sanos: 7–9 horas por noche. Algunas personas funcionan con 6, otras necesitan más de 9;
+                        prioriza cómo te sientes en el día (vigilancia, energía, recuperación).
+                    </p>
+
+                    <h6 class="mt-4">Si tienes problemas persistentes</h6>
+                    <p class="card-text">
+                        Si sufres insomnio crónico, somnolencia excesiva diurna o ronquidos intensos, consulta a un profesional de la salud
+                        para descartar trastornos del sueño.
+                    </p>
+
+                    <div class="d-flex justify-content-between mt-4">
+                        <a href="{{ url_for('articulos') }}" class="btn btn-outline-success">Volver a artículos</a>
+                        <a href="{{ url_for('registro_alimentos') }}" class="btn btn-success">Ver registro de hábitos</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4">
+            <div class="card shadow-sm h-100">
+                <img src="{{ url_for('static', filename='img/sueno.jpg') }}" class="card-img-top" alt="Sueño reparador">
+                <div class="card-body">
+                    <h6 class="card-subtitle mb-2 text-muted">Consejos rápidos</h6>
+                    <ul class="list-unstyled mt-3">
+                        <li>Temperatura: 16–19 °C suele ser ideal.</li>
+                        <li>Evita cenas muy pesadas antes de dormir.</li>
+                        <li>Si no concilias el sueño en 20 min, levántate y haz algo relajante.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="card mt-4 shadow-sm">
+                <div class="card-body">
+                    <small class="text-muted">
+                        Información general. No sustituye consejo médico.
+                    </small>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

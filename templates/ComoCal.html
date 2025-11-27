@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+{% block title %}Cómo calcular tus calorías diarias — CALBORNE{% endblock %}
+{% block content %}
+<div class="container my-5">
+  <div class="card p-4">
+    <h1 class="mb-3">Cómo calcular tus calorías diarias</h1>
+    <p class="text-muted">Conocer tu gasto energético te permite diseñar un plan para perder, mantener o ganar peso de forma segura.</p>
+
+    <section class="mt-4">
+      <h4>Paso 1 — Calcula tu Tasa Metabólica Basal (TMB)</h4>
+      <p>La TMB es la energía que tu cuerpo usa en reposo para funciones básicas (respirar, mantener temperatura, etc.). Una fórmula habitual es la Mifflin–St Jeor. Puedes usar la calculadora para obtener un valor aproximado.</p>
+      <a class="btn btn-outline-success btn-sm mt-2" href="{{ url_for('calculadora_TMB') }}">Usar calculadora TMB</a>
+    </section>
+
+    <section class="mt-4">
+      <h4>Paso 2 — Multiplica por tu nivel de actividad (GCT)</h4>
+      <p>Multiplica la TMB por un factor según tu actividad diaria para obtener el Gasto Calórico Total (GCT):</p>
+      <ul>
+        <li><strong>Sedentario:</strong> × 1.2</li>
+        <li><strong>Ligero:</strong> × 1.375</li>
+        <li><strong>Moderado:</strong> × 1.55</li>
+        <li><strong>Activo:</strong> × 1.725</li>
+        <li><strong>Muy activo / atleta:</strong> × 1.9</li>
+      </ul>
+      <a class="btn btn-outline-success btn-sm mt-2" href="{{ url_for('calculadora_GCT') }}">Usar calculadora GCT</a>
+    </section>
+
+    <section class="mt-4">
+      <h4>Interpretación práctica</h4>
+      <p>El GCT es la estimación de las calorías que necesitas para mantener tu peso actual. Para modificar tu peso, ajusta las calorías:</p>
+      <ul>
+        <li><strong>Déficit moderado (~500 kcal/día):</strong> pérdida de ≈0.5 kg/semana.</li>
+        <li><strong>Déficit ligero (~250 kcal/día):</strong> pérdida más lenta y sostenible.</li>
+        <li><strong>Superávit moderado (~250–500 kcal/día):</strong> para ganar masa muscular con menor ganancia grasa.</li>
+      </ul>
+    </section>
+
+    <section class="mt-4">
+      <h4>Ejemplo rápido</h4>
+      <p>Si tu TMB = 1600 kcal y tu actividad es moderada (×1.55): GCT ≈ 2480 kcal. Para perder 0.5 kg/sem semana podrías apuntar a ~1980 kcal/día.</p>
+    </section>
+
+    <section class="mt-4">
+      <h4>Consejos útiles</h4>
+      <ul>
+        <li>Usa las calculadoras de la app para obtener valores iniciales; ajusta según progreso y sensaciones.</li>
+        <li>Prioriza la calidad de los alimentos: proteínas suficientes, carbohidratos complejos y grasas saludables.</li>
+        <li>Monitorea peso y composición corporal, no solo la báscula; la pérdida de grasa puede venir con cambios en la masa muscular.</li>
+        <li>Consulta a un profesional si tienes condiciones médicas o dudas específicas.</li>
+      </ul>
+    </section>
+
+    <div class="mt-4 d-flex justify-content-between">
+      <a href="{{ url_for('articulos') }}" class="btn btn-outline-success">Volver a artículos</a>
+      <a href="{{ url_for('calculadora_GCT') }}" class="btn btn-success">Calcular mi GCT</a>
+    </div>
+  </div>
+</div>
+{% endblock %}
